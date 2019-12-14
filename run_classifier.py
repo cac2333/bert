@@ -360,7 +360,7 @@ class PkuProcessor(DataProcessor):
         text_a = tokenization.convert_to_unicode(line[0])
         text_b = None 
         label = tokenization.convert_to_unicode(line[1])
-       # label = label.split(" ")
+        label = label.split(" ")
         guid = "{}_{}".format("pku.cws", str(i))
         examples.append(
             InputExample(guid=guid, text_a=text_a, text_b=None, label=label))
@@ -410,7 +410,7 @@ class ColaProcessor(DataProcessor):
 
 
 def convert_single_example(ex_index, example, label_list, max_seq_length,
-                           tokenizer):
+                           tokenizer, task_sign='cws'):
   """Converts a single `InputExample` into a single `InputFeatures`."""
 
   if isinstance(example, PaddingInputExample):
@@ -491,7 +491,23 @@ def convert_single_example(ex_index, example, label_list, max_seq_length,
   assert len(input_mask) == max_seq_length
   assert len(segment_ids) == max_seq_length
 
-  label_id = label_map[example.label]
+  if len(example.label) > max_seq_length - 2:
+      example.label = example.label[: (max_seq_length - 2)]
+            
+  if task_sign == "ner":
+      label_id = [label_map["O"]] + [label_map[tmp] for tmp in example.label] + [label_map["O"]]
+      label_id += (len(input_ids) - len(label_id)) * [label_map["O"]]
+  elif task_sign == "pos":
+      label_id = [label_map["O"]] + [label_map[tmp] for tmp in example.label]
+      label_id += (len(input_ids) - len(label_id)) * [label_map["O"]]
+  elif task_sign == "cws":
+      label_id = [label_map["S-SEG"]] + [label_map[tmp] for tmp in example.label]
+      label_id += (len(input_ids) - len(label_id)) * [label_map["S-SEG"]]
+  elif task_sign == 'clf':
+      label_id = label_map[example.label]
+  else:
+      raise ValueError
+            
   if ex_index < 5:
     tf.logging.info("*** Example ***")
     tf.logging.info("guid: %s" % (example.guid))
