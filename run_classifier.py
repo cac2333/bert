@@ -364,7 +364,7 @@ class PkuProcessor(DataProcessor):
         guid = "{}_{}".format("pku.cws", str(i))
         examples.append(
             InputExample(guid=guid, text_a=text_a, text_b=None, label=label))
-      return examples
+    return examples
 
 
 
