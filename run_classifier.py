@@ -336,15 +336,15 @@ class MrpcProcessor(DataProcessor):
 class PkuProcessor(DataProcessor):
   def get_train_examples(self, data_dir):
         # see base class 
-      return self._create_examples(self._read_tsv(os.path.join(data_dir, "train.char.bmes")), "train")
+      return self._create_examples(self._read_tsv(os.path.join(data_dir, "PKU_train.char.bmes")), "train")
 
 
   def get_test_examples(self, data_dir):
-      return self._create_examples(self._read_tsv(os.path.join(data_dir, "test.char.bmes")), "test")
+      return self._create_examples(self._read_tsv(os.path.join(data_dir, "PKU_test.char.bmes")), "test")
 
 
   def get_dev_examples(self, data_dir):
-      return self._create_examples(self._read_tsv(os.path.join(data_dir, "dev.char.bmes")), "dev") 
+      return self._create_examples(self._read_tsv(os.path.join(data_dir, "PKU_dev.char.bmes")), "dev") 
 
 
   def get_labels(self):
