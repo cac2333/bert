@@ -348,7 +348,7 @@ class PkuProcessor(DataProcessor):
 
 
   def get_labels(self):
-      return ['B-SEG', 'M-SEG', 'S-SEG', 'E-SEG',]
+      return ['B-SEG', 'M-SEG', 'S-SEG', 'E-SEG']
     
 
   def _create_examples(self, lines, set_type):
@@ -357,10 +357,10 @@ class PkuProcessor(DataProcessor):
     for (i, line) in enumerate(lines):
         if line == '\n':
             continue
-        text_a = line[0]
+        text_a = tokenization.convert_to_unicode(line[0])
         text_b = None 
-        label = line[1]
-        label = label.split(" ")
+        label = tokenization.convert_to_unicode(line[1])
+       # label = label.split(" ")
         guid = "{}_{}".format("pku.cws", str(i))
         examples.append(
             InputExample(guid=guid, text_a=text_a, text_b=None, label=label))
