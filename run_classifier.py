@@ -333,6 +333,41 @@ class MrpcProcessor(DataProcessor):
     return examples
 
 
+class PkuProcessor(DataProcessor):
+  def get_train_examples(self, data_dir):
+        # see base class 
+      return self._create_examples(self._read_tsv(os.path.join(data_dir, "train.char.bmes")), "train")
+
+
+  def get_test_examples(self, data_dir):
+      return self._create_examples(self._read_tsv(os.path.join(data_dir, "test.char.bmes")), "test")
+
+
+  def get_dev_examples(self, data_dir):
+      return self._create_examples(self._read_tsv(os.path.join(data_dir, "dev.char.bmes")), "dev") 
+
+
+  def get_labels(self):
+      return ['B-SEG', 'M-SEG', 'S-SEG', 'E-SEG',]
+    
+
+  def _create_examples(self, lines, set_type):
+    """Creates examples for the training and dev sets."""
+    examples = []
+    for (i, line) in enumerate(lines):
+        if line == '\n':
+            continue
+        text_a = line[0]
+        text_b = None 
+        label = line[1]
+        label = label.split(" ")
+        guid = "{}_{}".format("pku.cws", str(i))
+        examples.append(
+            InputExample(guid=guid, text_a=text_a, text_b=None, label=label))
+      return examples
+
+
+
 class ColaProcessor(DataProcessor):
   """Processor for the CoLA data set (GLUE version)."""
 
@@ -788,6 +823,7 @@ def main(_):
       "mnli": MnliProcessor,
       "mrpc": MrpcProcessor,
       "xnli": XnliProcessor,
+      "pku": PkuProcessor,
   }
 
   tokenization.validate_case_matches_checkpoint(FLAGS.do_lower_case,
